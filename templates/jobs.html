@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 align="center">Jobs</h3> <br/>
+<center>
+    <a href="/departments" class="btn btn-secondary">To Departments</a>
+    {% if current_user.is_authenticated %}
+        <a href="new_job" class="btn btn-secondary">Add job</a>
+    {% endif %}
+</center>
+{% for item in jobs%}
+<div>
+    <h5>Action #{{item.id}}</h5>
+    <div>
+        <table border="0" width="100%">
+            <tr style="background-color: #DDDDDD; font-size: 1.5rem;">
+                <td>Title of activity</td>
+                <td>Team leader</td>
+                <td>Duration</td>
+                <td>List of collaborators</td>
+                <td>Hazard category</td>
+                <td>Is finished</td>
+            </tr>
+            <tr style="font-size: 1.5rem;">
+                <td style="background-color: #EEEEFF">{{ item.job }}</td>
+                <td style="background-color: #EEEEFF">{{ item.user.surname }} {{ item.user.name }}</td>
+                <td style="background-color: #EEEEFF">{{ item.work_size }} hours</td>
+                <td style="background-color: #EEEEFF">{{ item.collaborators }}</td>
+                <td style="background-color: #EEEEFF">{{ item.categories[0].name }}</td>
+                {% if item.is_finished %}
+                    <td style="background-color: #EEFFEE">Is finished</td>
+                {% else %}
+                    <td style="background-color: #FFEEFF">Is not finished</td>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+    {% if current_user.is_authenticated and (current_user.id == item.creator or current_user.id == item.team_leader or current_user.position == "captain") %}
+        <div>
+            <a href="/new_job/{{ item.id }}" class="btn btn-warning">Edit</a>
+            <a href="/delete_job/{{ item.id }}" class="btn btn-danger">Delete</a>
+        </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
